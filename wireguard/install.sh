@@ -19,13 +19,16 @@ wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
 PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
 PUBLIC_KEY=$(cat /etc/wireguard/publickey)
 
+# Порт, который будет использоваться для прослушивания
+PORT=41641
+
 # Генерация конфигурации для сервера
 echo "🔧 Генерация конфигурации для сервера..."
 cat <<EOF | sudo tee /etc/wireguard/wg0.conf > /dev/null
 [Interface]
 PrivateKey = $PRIVATE_KEY
 Address = 10.0.0.1/24
-ListenPort = 41641
+ListenPort = $PORT  # Используем переменную PORT для записи порта
 SaveConfig = true
 
 # Разрешаем форвард трафика
