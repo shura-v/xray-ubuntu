@@ -1,6 +1,7 @@
 #!/bin/bash
 
 COMMAND=$1
+ARG=$2
 SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 show_help() {
@@ -29,7 +30,7 @@ case "$COMMAND" in
     bash "$SCRIPTS_DIR/list.sh"
     ;;
   remove)
-    bash "$SCRIPTS_DIR/remove.sh"
+    bash "$SCRIPTS_DIR/remove.sh $ARG"
     ;;
   config)
     nano /etc/wireguard/wg0.conf && systemctl restart wg-quick@wg0
