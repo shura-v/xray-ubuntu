@@ -31,6 +31,7 @@ install() {
   # Проверка на существующие ключи
   if [ -f /etc/xray/private.key ] || [ -f /etc/xray/public.key ]; then
     echo "❌ Ключи уже существуют. Перезапись невозможна."
+    echo "rm /etc/xray/private.key /etc/xray/public.key"
     exit 1
   fi
 
