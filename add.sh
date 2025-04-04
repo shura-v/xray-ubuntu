@@ -30,5 +30,5 @@ VLESS_LINK="vless://${UUID}@${IP}:${PORT}?encryption=none&security=reality&fp=ch
 
 echo ""
 echo "✅ Клиент '$NAME' добавлен!"
-echo "📲 Строка для импорта в v2rayNG:"
+echo "📲 Строка для импорта:"
 echo "$VLESS_LINK"
