@@ -25,6 +25,7 @@ PORT=41641
 
 # Генерация конфигурации для сервера
 echo "🔧 Генерация конфигурации для сервера..."
+WAN_IFACE=$(ip route get 1.1.1.1 | awk '{print $5; exit}')
 cat <<EOF | sudo tee /etc/wireguard/wg0.conf > /dev/null
 [Interface]
 PrivateKey = $PRIVATE_KEY
@@ -32,12 +33,13 @@ Address = 10.0.0.1/24
 ListenPort = $PORT
 
 # Разрешаем форвард трафика
-PostUp = ufw route allow in on wg0 out on eth0
-PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
-PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+PostUp = ufw route allow in on wg0 out on $WAN_IFACE
+PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o $WAN_IFACE -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o $WAN_IFACE -j MASQUERADE
 
 # Добавляем peer позже через add.sh
 EOF
+
 
 # Включение IP форвардинга
 echo "🔧 Включаем IP форвардинг..."
