@@ -23,7 +23,7 @@ if [ -z "$CLIENT_NAME" ]; then
   exit 1
 fi
 
-read -p "Введите IP клиента (например: 10.0.0.2): " CLIENT_IP
+read -p "Введите IP клиента (например: 10.0.0.3): " CLIENT_IP
 if [ -z "$CLIENT_IP" ]; then
   echo "❌ IP клиента не может быть пустым."
   exit 1
@@ -57,6 +57,7 @@ cat <<EOF
 [Interface]
 PrivateKey = $CLIENT_PRIV
 Address = $CLIENT_IP/32
+DNS = 10.0.0.1
 
 [Peer]
 PublicKey = $SERVER_PUB
