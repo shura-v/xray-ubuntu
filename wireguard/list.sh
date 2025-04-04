@@ -25,13 +25,16 @@ grep -A 3 '\[Peer\]' "$WG_CONF" | while read -r line; do
   elif [[ "$line" =~ AllowedIPs\ =\ (.*) ]]; then
     CLIENT_IP="${BASH_REMATCH[1]}"
 
-    CLIENT_NAME="client_$CLIENT_PUB"  # Имя клиента будет основано на публичном ключе
+    # Ищем комментарий перед блоком клиента
+    CLIENT_COMMENT=$(grep -B 1 "PublicKey = $CLIENT_PUB" "$WG_CONF" | grep '^#' | tail -n 1)
+
+    CLIENT_NAME="${CLIENT_COMMENT//\#/}"  # Убираем знак '#' из комментария
+    CLIENT_NAME="${CLIENT_NAME// /}"     # Убираем лишние пробелы
 
     CLIENTS+=("$CLIENT_NAME")
 
     # Печатаем информацию о клиенте
     echo "Имя клиента: $CLIENT_NAME"
-    echo "IP клиента: $CLIENT_IP"
     echo "Публичный ключ клиента: $CLIENT_PUB"
     echo "----------------------------"
   fi
