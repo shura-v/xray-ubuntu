@@ -8,23 +8,19 @@ show_help() {
   echo "🧭 Xray CLI"
   echo ""
   echo "Использование:"
-  echo "  ./cli install     — установка Xray"
-  echo "  ./cli add         — добавить клиента"
-  echo "  ./cli list        — список клиентов"
-  echo "  ./cli remove      — удалить клиента"
-  echo ""
-  echo "Примеры:"
-  echo "  ./cli add"
-  echo "  ./cli list"
+  echo "  ./cli.sh install     — установка Xray"
+  echo "  ./cli.sh add         — добавить клиента"
+  echo "  ./cli.sh list        — список клиентов"
+  echo "  ./cli.sh remove      — удалить клиента"
   echo ""
 }
 
 install() {
-  # Запрашиваем порт
-  read -p "Введите порт для Xray (например: 443): " PORT
+  # Запрашиваем порт (по умолчанию 6789)
+  read -p "Введите порт для Xray (например: 6789): " PORT
 
-  # Если порт пустой, то по умолчанию 443
-  PORT=${PORT:-443}
+  # Если порт пустой, то по умолчанию 6789
+  PORT=${PORT:-6789}
 
   # Установка Xray
   bash <(curl -Ls https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
@@ -68,6 +64,9 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
+
+  # Открытие порта в ufw
+  sudo ufw allow $PORT/tcp
 
   # Запуск
   systemctl daemon-reload
