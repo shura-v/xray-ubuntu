@@ -38,9 +38,10 @@ fi
 echo "Удаление клиента '$CLIENT_NAME' с линии: $CLIENT_LINE"
 sudo sed -i "${CLIENT_LINE},/^#/d" "$WG_CONF"
 
-# Удаляем ключи клиента
+# Удаляем ключи и конфиг клиента
 sudo rm -f "$WG_DIR/$CLIENT_NAME-privatekey"
 sudo rm -f "$WG_DIR/$CLIENT_NAME-publickey"
+sudo rm -f "$WG_DIR/$CLIENT_NAME.conf"
 
 # Перезапуск WireGuard
 echo "🔄 Перезапускаем WireGuard..."
