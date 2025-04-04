@@ -39,7 +39,6 @@ CLIENT_PUB=$(cat /etc/wireguard/$CLIENT_NAME-publickey)
 if grep -q "$CLIENT_PUB" "$WG_CONF"; then
   echo "⚠️ Пир с этим ключом уже есть в $WG_CONF"
 else
-  echo "" | sudo tee -a "$WG_CONF" > /dev/null
   echo "# client_$CLIENT_NAME" | sudo tee -a "$WG_CONF" > /dev/null
   echo "[Peer]" | sudo tee -a "$WG_CONF" > /dev/null
   echo "PublicKey = $CLIENT_PUB" | sudo tee -a "$WG_CONF" > /dev/null
@@ -53,7 +52,7 @@ sudo systemctl restart wg-quick@wg0
 
 # Вывод всей конфигурации для клиента
 echo "🔗 Вот полная конфигурация для подключения клиента:"
-cat <<EOF
+cat <<EOF > /etc/wireguard/$CLIENT_NAME.conf
 [Interface]
 PrivateKey = $CLIENT_PRIV
 Address = $CLIENT_IP/32
