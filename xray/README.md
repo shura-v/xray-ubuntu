@@ -1,4 +1,4 @@
-### Установка сервиса Xray на Ubuntu
+### Установка сервиса Xray
 ```bash
 ./cli.sh install
 ```

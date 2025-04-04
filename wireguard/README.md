@@ -1,4 +1,4 @@
-### Установка сервиса WireGuard на Ubuntu
+### Установка сервиса WireGuard
 ```bash
 ./cli.sh install
 ```
