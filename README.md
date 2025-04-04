@@ -3,14 +3,7 @@
 ./cli.sh install
 ```
 
-### Редактирование конфигов
+### Доступные команды
 ```bash
-nano /usr/local/etc/xray/config.json
-systemctl restart xray
-```
-
-### Логи
-```bash
-journalctl -u xray -e
-journalctl -u xray -f # хвостик
+./cli.sh
 ```
