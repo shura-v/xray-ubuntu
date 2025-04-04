@@ -92,13 +92,13 @@ case "$COMMAND" in
     install
     ;;
   add)
-    bash "$SCRIPTS_DIR/add-reality-user.sh"
+    bash "$SCRIPTS_DIR/add.sh"
     ;;
   list)
-    echo "⏳ Команда list в разработке"
+    bash "$SCRIPTS_DIR/list.sh"
     ;;
   remove)
-    echo "⏳ Команда remove в разработке"
+    bash "$SCRIPTS_DIR/remove.sh"
     ;;
   *)
     show_help
