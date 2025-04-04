@@ -36,6 +36,11 @@ else
   read -p "Введите имя клиента для удаления: " CLIENT_NAME
 fi
 
+# Добавляем префикс client_ для имени, если его нет
+if [[ ! "$CLIENT_NAME" =~ ^client_ ]]; then
+  CLIENT_NAME="client_$CLIENT_NAME"
+fi
+
 # Проверка на существование клиента
 if [[ ! " ${CLIENTS[@]} " =~ " $CLIENT_NAME " ]]; then
   echo "❌ Клиент '$CLIENT_NAME' не найден в конфиге!"
