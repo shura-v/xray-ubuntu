@@ -51,6 +51,8 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 echo "net.ipv6.conf.all.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
 
+cat /etc/wireguard/wg0.conf
+
 # Запуск WireGuard
 echo "🔧 Запускаем WireGuard..."
 sudo systemctl enable wg-quick@wg0
@@ -66,3 +68,5 @@ echo "🚀 Не забудь добавить клиентов через ./add.
 
 # Перезагрузка WireGuard
 sudo systemctl restart wg-quick@wg0
+
+cat /etc/wireguard/wg0.conf
