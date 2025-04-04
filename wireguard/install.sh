@@ -29,19 +29,16 @@ cat <<EOF | sudo tee /etc/wireguard/wg0.conf > /dev/null
 [Interface]
 PrivateKey = $PRIVATE_KEY
 Address = 10.0.0.1/24
-ListenPort = $PORT  # Используем переменную PORT для записи порта
+ListenPort = $PORT
 SaveConfig = true
 
 # Разрешаем форвард трафика
 PostUp = ufw route allow in on wg0 out on eth0
-#PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
-#PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
 
 # Добавляем peer позже через add.sh
 EOF
-
-echo $PORT
-cat /etc/wireguard/wg0.conf
 
 # Включение IP форвардинга
 echo "🔧 Включаем IP форвардинг..."
@@ -67,8 +64,5 @@ echo "🔑 Публичный ключ сервера: $PUBLIC_KEY"
 
 echo "📄 Конфигурация для сервера сохранена в /etc/wireguard/wg0.conf"
 echo "🚀 Не забудь добавить клиентов через ./add.sh"
-
-# Перезагрузка WireGuard
-sudo systemctl restart wg-quick@wg0
 
 cat /etc/wireguard/wg0.conf
