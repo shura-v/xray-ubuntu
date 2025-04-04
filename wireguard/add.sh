@@ -30,14 +30,10 @@ if [ -z "$CLIENT_IP" ]; then
 fi
 
 # Генерация ключей клиента
-CLIENT_DIR="$WG_DIR/clients/$CLIENT_NAME"
-sudo mkdir -p "$CLIENT_DIR"
-cd "$CLIENT_DIR"
+wg genkey | tee /etc/wireguard/$CLIENT_NAME-privatekey | wg pubkey > /etc/wireguard/$CLIENT_NAME-publickey
 
-wg genkey | tee privatekey | wg pubkey > publickey
-
-CLIENT_PRIV=$(cat privatekey)
-CLIENT_PUB=$(cat publickey)
+CLIENT_PRIV=$(cat /etc/wireguard/$CLIENT_NAME-privatekey)
+CLIENT_PUB=$(cat /etc/wireguard/$CLIENT_NAME-publickey)
 
 # Добавление клиента в конфиг
 if grep -q "$CLIENT_PUB" "$WG_CONF"; then
@@ -61,7 +57,6 @@ cat <<EOF
 [Interface]
 PrivateKey = $CLIENT_PRIV
 Address = $CLIENT_IP/32
-DNS = 1.1.1.1
 
 [Peer]
 PublicKey = $SERVER_PUB
@@ -71,4 +66,4 @@ PersistentKeepalive = 25
 EOF
 
 echo "📄 Конфигурация клиента сгенерирована для подключения к серверу."
-echo "📁 Ключи: $CLIENT_DIR"
+echo "📁 Ключи: /etc/wireguard/$CLIENT_NAME-privatekey и /etc/wireguard/$CLIENT_NAME-publickey"
