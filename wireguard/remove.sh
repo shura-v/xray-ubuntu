@@ -36,7 +36,7 @@ echo "🔧 Удаляем клиента из конфигурации серв�
 ESCAPED_PUB=$(echo "$CLIENT_PUB" | sed 's/[&/\]/\\&/g')
 
 # Используем perl для удаления блока с публичным ключом клиента в wg0.conf
-sudo perl -i -0pe "s/# $CLIENT_NAME.*PublicKey = $ESCAPED_PUB.*?AllowedIPs = $ESCAPED_PUB//gs" "$WG_CONF"
+sudo perl -i -0pe "s/# $CLIENT_NAME.*?PublicKey = $ESCAPED_PUB.*?AllowedIPs = $ESCAPED_PUB.*?//gs" "$WG_CONF"
 
 # Удаление ключей клиента и его конфигурации
 echo "🔧 Удаляем ключи и конфигурацию клиента..."
