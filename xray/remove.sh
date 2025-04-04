@@ -29,13 +29,6 @@ fi
 TMP=$(mktemp)
 jq --arg name "$NAME" '(.inbounds[0].settings.clients) |= map(select(.email != $name))' "$CONFIG" > "$TMP"
 
-# Проверка валидности нового конфига
-if xray -test -config "$TMP" >/dev/null 2>&1; then
-  mv "$TMP" "$CONFIG"
-  echo "🗑️ Клиент '$NAME' удалён."
-  systemctl restart xray
-else
-  echo "❌ Новый конфиг невалиден. Удаление отменено."
-  rm "$TMP"
-  exit 1
-fi
+mv "$TMP" "$CONFIG"
+echo "🗑️ Клиент '$NAME' удалён."
+systemctl restart xray
