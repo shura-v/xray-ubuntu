@@ -12,12 +12,27 @@ show_help() {
   echo "  ./cli.sh add         — добавить клиента"
   echo "  ./cli.sh list        — список клиентов (в разработке)"
   echo "  ./cli.sh remove      — удалить клиента (в разработке)"
+  echo "  ./cli.sh config      — редактировать конфигурацию"
+  echo "  ./cli.sh log         — показать логи"
+  echo "  ./cli.sh status      — статус xray"
   echo ""
 }
 
 install() {
   read -p "Введите порт для Xray [по умолчанию 8443]: " PORT
   PORT=${PORT:-8443}
+
+  # Проверка порта на валидность
+  if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+    echo "❌ Неверный формат порта. Пожалуйста, введите целое число."
+    exit 1
+  fi
+
+  # Проверка на существующие ключи
+  if [ -f /etc/xray/private.key ] || [ -f /etc/xray/public.key ]; then
+    echo "❌ Ключи уже существуют. Перезапись невозможна."
+    exit 1
+  fi
 
   echo "🔧 Установка Xray-core..."
   bash <(curl -Ls https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
@@ -99,6 +114,15 @@ case "$COMMAND" in
     ;;
   remove)
     bash "$SCRIPTS_DIR/remove.sh"
+    ;;
+  config)
+    nano /usr/local/etc/xray/config.json && systemctl restart xray
+    ;;
+  log)
+    journalctl -u xray -e
+    ;;
+  status)
+    systemctl status xray
     ;;
   *)
     show_help

@@ -11,8 +11,11 @@ if [ ! -f "$CONFIG" ]; then
   exit 1
 fi
 
+# Получение порта из конфига
+PORT=$(jq -r '.inbounds[0].port' "$CONFIG")
+
 UUID=$(cat /proc/sys/kernel/random/uuid)
-read -p "Имя клиента (например: alex-phone): " NAME
+read -p "Имя клиента (например: iphone): " NAME
 
 apt-get install -y jq >/dev/null 2>&1
 TMP=$(mktemp)
@@ -23,7 +26,7 @@ systemctl restart xray
 IP=$(curl -s ipv4.icanhazip.com)
 
 # Сбор VLESS-ссылки
-VLESS_LINK="vless://${UUID}@${IP}:8443?encryption=none&security=reality&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=${SERVER_NAME}#${NAME}"
+VLESS_LINK="vless://${UUID}@${IP}:${PORT}?encryption=none&security=reality&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=${SERVER_NAME}#${NAME}"
 
 echo ""
 echo "✅ Клиент '$NAME' добавлен!"
