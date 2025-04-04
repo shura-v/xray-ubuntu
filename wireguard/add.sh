@@ -5,7 +5,7 @@ set -e
 WG_DIR="/etc/wireguard"
 WG_CONF="$WG_DIR/wg0.conf"
 IP=$(curl -s ipv4.icanhazip.com)
-SERVER_ENDPOINT="$IP:51820"
+SERVER_ENDPOINT="$IP:41641"
 
 # Проверка wg0.conf
 if [ ! -f "$WG_CONF" ]; then
