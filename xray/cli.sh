@@ -12,11 +12,6 @@ show_help() {
   echo "  ./cli.sh add         — добавить клиента"
   echo "  ./cli.sh list        — список клиентов"
   echo "  ./cli.sh remove      — удалить клиента"
-  echo ""
-  echo "Примеры:"
-  echo "  ./cli.sh add"
-  echo "  ./cli.sh list"
-  echo ""
 }
 
 case "$COMMAND" in
