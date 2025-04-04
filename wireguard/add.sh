@@ -40,7 +40,7 @@ if grep -q "$CLIENT_PUB" "$WG_CONF"; then
   echo "⚠️ Пир с этим ключом уже есть в $WG_CONF"
 else
   echo "" | sudo tee -a "$WG_CONF" > /dev/null
-  echo "# $CLIENT_NAME" | sudo tee -a "$WG_CONF" > /dev/null
+  echo "# client_$CLIENT_NAME" | sudo tee -a "$WG_CONF" > /dev/null
   echo "[Peer]" | sudo tee -a "$WG_CONF" > /dev/null
   echo "PublicKey = $CLIENT_PUB" | sudo tee -a "$WG_CONF" > /dev/null
   echo "AllowedIPs = $CLIENT_IP/32" | sudo tee -a "$WG_CONF" > /dev/null

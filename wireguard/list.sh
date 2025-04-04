@@ -17,27 +17,13 @@ echo "----------------------------"
 
 CLIENTS=()
 
-# Заполнение списка клиентов
-grep -A 3 '\[Peer\]' "$WG_CONF" | while read -r line; do
-  # Ищем строки с публичным ключом и IP-адресом
-  if [[ "$line" =~ PublicKey\ =\ (.*) ]]; then
-    CLIENT_PUB="${BASH_REMATCH[1]}"
-  elif [[ "$line" =~ AllowedIPs\ =\ (.*) ]]; then
-    CLIENT_IP="${BASH_REMATCH[1]}"
+# Заполнение списка клиентов, извлекая комментарии, начинающиеся с # client_
+grep -oP '^# client_\K.*' "$WG_CONF" | while read -r CLIENT_NAME; do
+  CLIENTS+=("$CLIENT_NAME")
 
-    # Ищем комментарий перед блоком клиента
-    CLIENT_COMMENT=$(grep -B 1 "PublicKey = $CLIENT_PUB" "$WG_CONF" | grep '^#' | tail -n 1)
-
-    CLIENT_NAME="${CLIENT_COMMENT//\#/}"  # Убираем знак '#' из комментария
-    CLIENT_NAME="${CLIENT_NAME// /}"     # Убираем лишние пробелы
-
-    CLIENTS+=("$CLIENT_NAME")
-
-    # Печатаем информацию о клиенте
-    echo "Имя клиента: $CLIENT_NAME"
-    echo "Публичный ключ клиента: $CLIENT_PUB"
-    echo "----------------------------"
-  fi
+  # Печатаем информацию о клиенте
+  echo "Имя клиента: $CLIENT_NAME"
+  echo "----------------------------"
 done
 
 echo "✅ Список клиентов завершён!"
