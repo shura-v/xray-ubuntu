@@ -30,7 +30,6 @@ cat <<EOF | sudo tee /etc/wireguard/wg0.conf > /dev/null
 PrivateKey = $PRIVATE_KEY
 Address = 10.0.0.1/24
 ListenPort = $PORT
-SaveConfig = true
 
 # Разрешаем форвард трафика
 PostUp = ufw route allow in on wg0 out on eth0
