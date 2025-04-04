@@ -1,23 +1,38 @@
 #!/bin/bash
 
-case "$1" in
+COMMAND=$1
+SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+show_help() {
+  echo ""
+  echo "🧭 Xray CLI"
+  echo ""
+  echo "Использование:"
+  echo "  ./cli.sh install     — установка Xray"
+  echo "  ./cli.sh add         — добавить клиента"
+  echo "  ./cli.sh list        — список клиентов"
+  echo "  ./cli.sh remove      — удалить клиента"
+  echo ""
+  echo "Примеры:"
+  echo "  ./cli.sh add"
+  echo "  ./cli.sh list"
+  echo ""
+}
+
+case "$COMMAND" in
   install)
-    bash ./install.sh
+    bash "$SCRIPTS_DIR/install.sh"
     ;;
   add)
-    bash ./add.sh
+    bash "$SCRIPTS_DIR/add.sh"
     ;;
   list)
-    bash ./list.sh
+    bash "$SCRIPTS_DIR/list.sh"
     ;;
   remove)
-    bash ./remove.sh
+    bash "$SCRIPTS_DIR/remove.sh"
     ;;
-  help|--help|-h|"")
-    echo "🧰 Xray CLI"
-    echo ""
-    echo "Использование:"
-    echo "  ./xray-cli.sh install   - Установить Xray и базовый конфиг"
-    echo "  ./xray-cli.sh add       - Добавить нового клиента"
-    echo "  ./xray-cli.sh list      - Показать список клиентов"
-    echo "  ./xray-cli.sh remove    - У
+  *)
+    show_help
+    ;;
+esac
