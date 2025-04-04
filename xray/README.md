@@ -1,16 +1,16 @@
-### Редактирование конфигов
+### Установка
+```bash
+./cli.sh install
 ```
+
+### Редактирование конфигов
+```bash
 nano /usr/local/etc/xray/config.json
 systemctl restart xray
 ```
 
-### Статус
-```
-systemctl status xray
-```
-
 ### Логи
-```
+```bash
 journalctl -u xray -e
 journalctl -u xray -f # хвостик
 ```
