@@ -8,37 +8,49 @@ show_help() {
   echo "🧭 Xray CLI"
   echo ""
   echo "Использование:"
-  echo "  ./cli.sh install     — установка Xray"
+  echo "  ./cli.sh install     — установка Xray (VLESS + REALITY)"
   echo "  ./cli.sh add         — добавить клиента"
-  echo "  ./cli.sh list        — список клиентов"
-  echo "  ./cli.sh remove      — удалить клиента"
+  echo "  ./cli.sh list        — список клиентов (в разработке)"
+  echo "  ./cli.sh remove      — удалить клиента (в разработке)"
   echo ""
 }
 
 install() {
-  # Запрашиваем порт (по умолчанию 6789)
-  read -p "Введите порт для Xray (например: 6789): " PORT
+  read -p "Введите порт для Xray [по умолчанию 8443]: " PORT
+  PORT=${PORT:-8443}
 
-  # Если порт пустой, то по умолчанию 6789
-  PORT=${PORT:-6789}
-
-  # Установка Xray
+  echo "🔧 Установка Xray-core..."
   bash <(curl -Ls https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
 
-  # Обновление конфигурации
+  echo "🔐 Генерация X25519 ключей..."
+  KEYS=$(xray x25519)
+  PRIVATE_KEY=$(echo "$KEYS" | grep "Private key" | awk '{print $3}')
+  PUBLIC_KEY=$(echo "$KEYS" | grep "Public key" | awk '{print $3}')
+
+  mkdir -p /etc/xray
+  echo "$PRIVATE_KEY" > /etc/xray/private.key
+  echo "$PUBLIC_KEY" > /etc/xray/public.key
+
   cat <<EOF > /usr/local/etc/xray/config.json
 {
   "inbounds": [
     {
       "port": $PORT,
-      "protocol": "vmess",
+      "protocol": "vless",
       "settings": {
-        "clients": []
+        "clients": [],
+        "decryption": "none"
       },
       "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/ws"
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "dest": "www.cloudflare.com:443",
+          "xver": 0,
+          "serverNames": ["www.cloudflare.com"],
+          "privateKey": "$PRIVATE_KEY",
+          "shortIds": ["12345678"]
         }
       }
     }
@@ -51,10 +63,9 @@ install() {
 }
 EOF
 
-  # Systemd юнит
   cat <<EOF > /etc/systemd/system/xray.service
 [Unit]
-Description=Xray Service
+Description=Xray REALITY Service
 After=network.target
 
 [Service]
@@ -65,15 +76,14 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF
 
-  # Открытие порта в ufw
   sudo ufw allow $PORT/tcp
-
-  # Запуск
   systemctl daemon-reload
   systemctl enable xray
-  systemctl start xray
+  systemctl restart xray
 
-  echo "✅ Xray установлен и запущен на порту $PORT!"
+  echo ""
+  echo "✅ Xray установлен с REALITY на порту $PORT!"
+  echo "Public Key для клиента: $PUBLIC_KEY"
   echo "Теперь используй ./cli.sh add для добавления клиента"
 }
 
@@ -82,13 +92,13 @@ case "$COMMAND" in
     install
     ;;
   add)
-    bash "$SCRIPTS_DIR/add.sh"
+    bash "$SCRIPTS_DIR/add-reality-user.sh"
     ;;
   list)
-    bash "$SCRIPTS_DIR/list.sh"
+    echo "⏳ Команда list в разработке"
     ;;
   remove)
-    bash "$SCRIPTS_DIR/remove.sh"
+    echo "⏳ Команда remove в разработке"
     ;;
   *)
     show_help
