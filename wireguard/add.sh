@@ -65,6 +65,10 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25
 EOF
 
+# Перезапуск WireGuard
+echo "🔄 Перезапускаем WireGuard..."
+sudo systemctl restart wg-quick@wg0
+
 echo "📄 Конфигурация клиента сгенерирована: $CLIENT_DIR/$CLIENT_NAME.conf"
 echo "📁 Ключи: $CLIENT_DIR"
 echo
@@ -72,7 +76,3 @@ echo
 # Вывод всей конфигурации для клиента
 echo "🔗 Вот полная конфигурация для подключения клиента:"
 cat "$CLIENT_DIR/$CLIENT_NAME.conf"
-
-echo
-echo "🚀 Не забудь:"
-echo "sudo systemctl restart wg-quick@wg0"
