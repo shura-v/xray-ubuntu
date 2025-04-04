@@ -15,7 +15,7 @@ if ! command -v jq >/dev/null 2>&1; then
 fi
 
 # Имя клиента
-read -p "Введите имя клиента для удаления (email, например: alex-phone): " NAME
+read -p "Введите имя клиента для удаления (email, например: iphone): " NAME
 
 # Проверка, существует ли такой пользователь
 EXISTS=$(jq -r --arg name "$NAME" '.inbounds[0].settings.clients[] | select(.email == $name)' "$CONFIG")
