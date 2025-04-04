@@ -29,11 +29,11 @@ if [ -z "$CLIENT_IP" ]; then
   exit 1
 fi
 
+# Генерация ключей клиента
 CLIENT_DIR="$WG_DIR/clients/$CLIENT_NAME"
 sudo mkdir -p "$CLIENT_DIR"
 cd "$CLIENT_DIR"
 
-# Генерация ключей клиента
 wg genkey | tee privatekey | wg pubkey > publickey
 
 CLIENT_PRIV=$(cat privatekey)
@@ -51,8 +51,13 @@ else
   echo "✅ Добавлен в $WG_CONF"
 fi
 
-# Генерация конфигурации клиента
-cat <<EOF | sudo tee "$CLIENT_DIR/$CLIENT_NAME.conf" > /dev/null
+# Перезапуск WireGuard
+echo "🔄 Перезапускаем WireGuard..."
+sudo systemctl restart wg-quick@wg0
+
+# Вывод всей конфигурации для клиента
+echo "🔗 Вот полная конфигурация для подключения клиента:"
+cat <<EOF
 [Interface]
 PrivateKey = $CLIENT_PRIV
 Address = $CLIENT_IP/32
@@ -65,14 +70,5 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25
 EOF
 
-# Перезапуск WireGuard
-echo "🔄 Перезапускаем WireGuard..."
-sudo systemctl restart wg-quick@wg0
-
-echo "📄 Конфигурация клиента сгенерирована: $CLIENT_DIR/$CLIENT_NAME.conf"
+echo "📄 Конфигурация клиента сгенерирована для подключения к серверу."
 echo "📁 Ключи: $CLIENT_DIR"
-echo
-
-# Вывод всей конфигурации для клиента
-echo "🔗 Вот полная конфигурация для подключения клиента:"
-cat "$CLIENT_DIR/$CLIENT_NAME.conf"

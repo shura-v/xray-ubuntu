@@ -3,26 +3,31 @@
 set -e
 
 WG_DIR="/etc/wireguard"
-CLIENTS_DIR="$WG_DIR/clients"
+WG_CONF="$WG_DIR/wg0.conf"
 
-# Проверка наличия директории с клиентами
-if [ ! -d "$CLIENTS_DIR" ]; then
-  echo "❌ Директория с клиентами не найдена: $CLIENTS_DIR"
+# Проверка наличия конфигурации WireGuard
+if [ ! -f "$WG_CONF" ]; then
+  echo "❌ Файл конфигурации WireGuard не найден: $WG_CONF"
   exit 1
 fi
 
-# Перечисление всех клиентов
+# Перечисление всех клиентов из конфигурации
 echo "📋 Список клиентов WireGuard:"
 echo "----------------------------"
-for CLIENT_DIR in "$CLIENTS_DIR"/*; do
-  if [ -d "$CLIENT_DIR" ]; then
-    CLIENT_NAME=$(basename "$CLIENT_DIR")
-    CLIENT_IP=$(cat "$CLIENT_DIR/$CLIENT_NAME.conf" | grep "Address" | cut -d '=' -f 2 | tr -d ' ')
-    CLIENT_PUB=$(cat "$CLIENT_DIR/publickey")
+
+grep -A 3 '\[Peer\]' "$WG_CONF" | while read -r line; do
+  # Ищем строки с публичным ключом и IP-адресом
+  if [[ "$line" =~ PublicKey\ =\ (.*) ]]; then
+    CLIENT_PUB="${BASH_REMATCH[1]}"
+  elif [[ "$line" =~ AllowedIPs\ =\ (.*) ]]; then
+    CLIENT_IP="${BASH_REMATCH[1]}"
+
+    CLIENT_NAME="client_$CLIENT_PUB"  # Имя клиента будет основано на публичном ключе
+
     echo "Имя клиента: $CLIENT_NAME"
     echo "IP клиента: $CLIENT_IP"
     echo "Публичный ключ клиента: $CLIENT_PUB"
-    echo "Путь к конфигу клиента: $CLIENT_DIR/$CLIENT_NAME.conf"
+    echo "Путь к конфигу клиента: (не используется в текущем формате)"
     echo "----------------------------"
   fi
 done
