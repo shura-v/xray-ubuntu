@@ -1,51 +1,31 @@
 #!/bin/bash
 
-# Проверка, что xray установлен
 CONFIG="/usr/local/etc/xray/config.json"
+PRIVATE_KEY=$(cat /etc/xray/private.key)
+PUBLIC_KEY=$(cat /etc/xray/public.key)
+SHORT_ID="12345678"
+SERVER_NAME="www.cloudflare.com"
+
 if [ ! -f "$CONFIG" ]; then
-  echo "❌ Конфиг Xray не найден. Сначала запусти install-xray.sh"
+  echo "❌ Конфиг не найден. Установи Xray через install-reality.sh"
   exit 1
 fi
 
-# Генерация UUID и имени
 UUID=$(cat /proc/sys/kernel/random/uuid)
 read -p "Имя клиента (например: alex-phone): " NAME
 
-# Вставка клиента в JSON (через jq)
 apt-get install -y jq >/dev/null 2>&1
 TMP=$(mktemp)
-jq ".inbounds[0].settings.clients += [{\"id\":\"$UUID\",\"alterId\":0,\"email\":\"$NAME\"}]" $CONFIG > "$TMP" && mv "$TMP" $CONFIG
+jq ".inbounds[0].settings.clients += [{\"id\":\"$UUID\",\"flow\":\"xtls-rprx-vision\",\"email\":\"$NAME\"}]" $CONFIG > "$TMP" && mv "$TMP" $CONFIG
 
-# Перезапуск xray
 systemctl restart xray
 
-# IP для импорта
 IP=$(curl -s ipv4.icanhazip.com)
 
-# Генерация строки импорта
-VMESS_JSON=$(cat <<EOF
-{
-  "v": "2",
-  "ps": "$NAME",
-  "add": "$IP",
-  "port": "80",
-  "id": "$UUID",
-  "aid": "0",
-  "net": "ws",
-  "type": "none",
-  "host": "",
-  "path": "/ws",
-  "tls": ""
-}
-EOF
-)
-
-VMESS_LINK="vmess://$(echo "$VMESS_JSON" | base64 -w 0)"
+# Сбор VLESS-ссылки
+VLESS_LINK="vless://${UUID}@${IP}:443?encryption=none&security=reality&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=${SERVER_NAME}#${NAME}"
 
 echo ""
-echo "cat /usr/local/etc/xray/config.json"
-
 echo "✅ Клиент '$NAME' добавлен!"
-echo "🔐 UUID: $UUID"
 echo "📲 Строка для импорта в v2rayNG:"
-echo "$VMESS_LINK"
+echo "$VLESS_LINK"
