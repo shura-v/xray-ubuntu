@@ -39,6 +39,9 @@ PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
 # Добавляем peer позже через add.sh
 EOF
 
+echo $PORT
+cat /etc/wireguard/wg0.conf
+
 # Включение IP форвардинга
 echo "🔧 Включаем IP форвардинг..."
 sudo sysctl -w net.ipv4.ip_forward=1
