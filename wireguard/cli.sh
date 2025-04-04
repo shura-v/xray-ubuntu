@@ -30,7 +30,7 @@ case "$COMMAND" in
     bash "$SCRIPTS_DIR/list.sh"
     ;;
   remove)
-    bash "$SCRIPTS_DIR/remove.sh $ARG"
+    bash "$SCRIPTS_DIR/remove.sh" $ARG
     ;;
   config)
     nano /etc/wireguard/wg0.conf && systemctl restart wg-quick@wg0
