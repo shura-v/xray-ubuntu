@@ -34,8 +34,8 @@ SaveConfig = true
 
 # Разрешаем форвард трафика
 PostUp = ufw route allow in on wg0 out on eth0
-PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
-PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+#PostUp = iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+#PostDown = iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
 
 # Добавляем peer позже через add.sh
 EOF
