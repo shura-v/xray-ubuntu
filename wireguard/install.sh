@@ -15,6 +15,7 @@ fi
 echo "🔐 Генерация ключей для сервера..."
 sudo mkdir -p /etc/wireguard
 wg genkey | tee /etc/wireguard/privatekey | wg pubkey > /etc/wireguard/publickey
+sudo systemctl enable wg-quick@wg0
 
 PRIVATE_KEY=$(cat /etc/wireguard/privatekey)
 PUBLIC_KEY=$(cat /etc/wireguard/publickey)
@@ -55,8 +56,9 @@ cat /etc/wireguard/wg0.conf
 
 # Запуск WireGuard
 echo "🔧 Запускаем WireGuard..."
-sudo systemctl enable wg-quick@wg0
 sudo systemctl start wg-quick@wg0
+
+cat /etc/wireguard/wg0.conf
 
 # Публичный ключ сервера
 echo "✅ Генерация завершена!"
