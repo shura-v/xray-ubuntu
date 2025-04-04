@@ -65,5 +65,7 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25
 EOF
 
+cat /etc/wireguard/$CLIENT_NAME.conf
+
 echo "📄 Конфигурация клиента сгенерирована для подключения к серверу."
 echo "📁 Ключи: /etc/wireguard/$CLIENT_NAME-privatekey и /etc/wireguard/$CLIENT_NAME-publickey"
