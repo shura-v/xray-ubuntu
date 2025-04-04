@@ -31,7 +31,7 @@ fi
 CLIENT_PUB=$(cat "$CLIENT_DIR/publickey")
 
 echo "🔧 Удаляем клиента из конфигурации сервера..."
-sudo sed -i "/# $CLIENT_NAME/,/AllowedIPs = $CLIENT_PUB/ { /# $CLIENT_NAME/,/AllowedIPs = $CLIENT_PUB/ { /Peer/!d } }" "$WG_CONF"
+sudo perl -i -0pe "s/# $CLIENT_NAME.*?PublicKey = $CLIENT_PUB.*?AllowedIPs = $CLIENT_PUB.*?//gs" "$WG_CONF"
 
 # Удаление ключей клиента и его конфигурации
 echo "🔧 Удаляем ключи и конфигурацию клиента..."
