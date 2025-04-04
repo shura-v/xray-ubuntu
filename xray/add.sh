@@ -7,7 +7,7 @@ SHORT_ID="12345678"
 SERVER_NAME="www.cloudflare.com"
 
 if [ ! -f "$CONFIG" ]; then
-  echo "❌ Конфиг не найден. Установи Xray через install-reality.sh"
+  echo "❌ Конфиг не найден. Установи Xray через ./cli.sh install"
   exit 1
 fi
 
