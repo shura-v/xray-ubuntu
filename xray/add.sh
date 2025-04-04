@@ -23,7 +23,7 @@ systemctl restart xray
 IP=$(curl -s ipv4.icanhazip.com)
 
 # Сбор VLESS-ссылки
-VLESS_LINK="vless://${UUID}@${IP}:443?encryption=none&security=reality&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=${SERVER_NAME}#${NAME}"
+VLESS_LINK="vless://${UUID}@${IP}:8443?encryption=none&security=reality&fp=chrome&pbk=${PUBLIC_KEY}&sid=${SHORT_ID}&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=${SERVER_NAME}#${NAME}"
 
 echo ""
 echo "✅ Клиент '$NAME' добавлен!"
