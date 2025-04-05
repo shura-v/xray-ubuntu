@@ -20,13 +20,14 @@ else
   read -p "Введите имя клиента для удаления (без префикса 'client_'): " CLIENT_NAME
 fi
 
+FULL_CLIENT_NAME=$CLIENT_NAME
 # Добавляем префикс client_ для имени, если его нет
 if [[ ! "$CLIENT_NAME" =~ ^client_ ]]; then
-  CLIENT_NAME="client_$CLIENT_NAME"
+  FULL_CLIENT_NAME="client_$CLIENT_NAME"
 fi
 
 # Проверяем, существует ли в конфиге комментарий с нужным именем клиента
-CLIENT_COMMENT="# $CLIENT_NAME"
+CLIENT_COMMENT="# $FULL_CLIENT_NAME"
 CLIENT_LINE=$(grep -n "$CLIENT_COMMENT" "$WG_CONF" | cut -d: -f1)
 
 if [ -z "$CLIENT_LINE" ]; then
