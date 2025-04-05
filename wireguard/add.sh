@@ -36,8 +36,9 @@ CLIENT_PRIV=$(cat /etc/wireguard/$CLIENT_NAME-privatekey)
 CLIENT_PUB=$(cat /etc/wireguard/$CLIENT_NAME-publickey)
 
 # Добавление клиента в конфиг
-if grep -q "$CLIENT_PUB" "$WG_CONF"; then
-  echo "⚠️ Пир с этим ключом уже есть в $WG_CONF"
+if grep -q "$CLIENT_IP/32" "$WG_CONF"; then
+  echo "⚠️ IP $CLIENT_IP уже используется в $WG_CONF!"
+  exit 1
 else
   echo "# client_$CLIENT_NAME" | sudo tee -a "$WG_CONF" > /dev/null
   echo "[Peer]" | sudo tee -a "$WG_CONF" > /dev/null
